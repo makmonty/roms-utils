@@ -4,6 +4,9 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  getGameName
+} = require('./common');
 
 const firstDir = process.argv[2];
 const secondDir = process.argv[3];
@@ -45,9 +48,3 @@ fs.readdir(firstDir, (err, files) => {
     });
   });
 })
-
-// Helper functions
-
-function getGameName(file) {
-  return file.split(' (')[0].replace(/\[.*\]/, '').trim().toUpperCase();
-}
