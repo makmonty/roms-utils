@@ -31,6 +31,7 @@ fs.readdir(firstDir, (err, files) => {
       const game = getGameName(file);
 
       if (!best[game]) {
+        console.log(`Moving ${file}`);
         fs.copyFile(
           path.join(secondDir, file),
           path.join(firstDir, file),

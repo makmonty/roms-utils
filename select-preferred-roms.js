@@ -23,8 +23,11 @@ if (!dir) {
 }
 
 const preferred = {};
+const deleted = []
 
 fs.readdir(dir, (err, files) => {
+  console.log(`${files.length} files found`);
+
   // Get the best of each game
   files.forEach((file, index) => {
     const game = getGameName(file);
@@ -35,7 +38,8 @@ fs.readdir(dir, (err, files) => {
   files.forEach((file) => {
     const game = getGameName(file);
     if (file !== preferred[game]) {
-      // console.log('Delete',file,'and not',preferred[game]);
+      console.log(`Delete ${file} instead of ${preferred[game]}`);
+      deleted.push(file);
       fs.unlink(path.join(dir, file), (err) => {
         if (err) {
           console.log(err);
@@ -43,8 +47,9 @@ fs.readdir(dir, (err, files) => {
       });
     }
   });
-});
 
+  console.log(`${deleted.length} files deleted`);
+});
 
 
 // Helper functions
