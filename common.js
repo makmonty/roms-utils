@@ -2,7 +2,7 @@ function getGameName(file) {
   // Extract file name
   let name = file.split('/').pop();
   // Remove extension
-  const nameSplit = file.split('.');
+  const nameSplit = name.split('.');
   nameSplit.pop();
   name = nameSplit.join('.');
   // Remove brackets and parenthesis

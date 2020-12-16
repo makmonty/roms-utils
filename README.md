@@ -8,14 +8,13 @@ Use it together with [hascheevos](https://github.com/meleu/hascheevos) to select
 
 The idea is having the best version of each game, with priority with those with cheevos.
 
-Filter the preferred roms. **WARNING**: This command will delete the non preferred roms, so make a copy of all the roms first
 ```
 node select-preferred-roms.js /path/to/all/roms <options>
 ```
 
 ## Options
 
-* **deleteNonPreferred**: _boolean_. If set, it will delete the files which are not the preferred version of each rom.
+* **deleteNonPreferred**: _boolean_. If set, it will delete the files which are not the preferred version of each rom. USE WITH CAUTION.
 * **copyPreferredToPath**: _string_. Path to copy the preferred files.
 * **recursive**: _boolean_. If directories are found, go into them too.
 * **dryRun**: _boolean_. Do not perform any change. Used to check the output before doing anything.

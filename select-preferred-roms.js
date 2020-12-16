@@ -23,21 +23,22 @@ const preferredVersions = [
 ];
 
 const args = processArgs();
-const dir = args._[0];
 const deleteNonPreferred = !!args['delete-non-preferred'];
 const copyPreferredToPath = args['copy-to-path'];
 const recursive = args['recursive'];
 const dryRun = !!args['dry-run'];
 const verbose = !!args['verbose'];
+const paths = !args['path'] ? [] :
+  Array.isArray(args['path']) ? args['path'] :
+  [args['path']];
 
-if (!dir) {
+const dirs = [...args._, ...paths];
+
+if (!dirs) {
   throw 'No path specified';
 }
 
-const dirs = [dir];
-
 const hasCheevosCache = {};
-
 
 if (dryRun) {
   console.log('DRY RUN');
@@ -65,10 +66,16 @@ async function getFilesFromDir(dir, recursive) {
         reject(err);
         return;
       }
-      const files = result.filter(file => fs.lstatSync(path.join(dir, file)).isFile());
-      const dirs = result.filter(file => fs.lstatSync(path.join(dir, file)).isDirectory());
+      const paths = result.map(file => path.join(dir, file));
+      const dirs = paths.filter(path => fs.lstatSync(path).isDirectory());
+      let files = paths.filter(path => fs.lstatSync(path).isFile());
 
-      resolve(files.map(file => path.join(dir, file)));
+      if (recursive) {
+        const recFiles = await getFilesFromDirs(dirs, recursive);
+        files = files.concat(recFiles)
+      }
+
+      resolve(files);
     });
   })
 }
@@ -79,7 +86,6 @@ async function getFilesFromDir(dir, recursive) {
  */
 async function parseFiles(files) {
   const preferred = await getPreferred(files);
-
   if (copyPreferredToPath) {
     const copied = await copyFilesToPath(Object.values(preferred), copyPreferredToPath);
 
@@ -155,7 +161,6 @@ async function copyFilesToPath(filePaths, destPath) {
 async function copyFileToPath(filePath, destDir) {
   const fileName = filePath.split('/').pop();
   const destPath = resolveHome(path.join(destDir, fileName));
-  verbose && console.log(`Copying ${filePath} to ${destPath}`);
   return new Promise((resolve, reject) => {
     if (!dryRun) {
       fs.copyFile(filePath, destPath, (err) => {
@@ -163,6 +168,7 @@ async function copyFileToPath(filePath, destDir) {
           reject(err);
           return;
         }
+        verbose && console.log(`Copied ${filePath} to ${destPath}`);
         resolve(filePath);
       });
     } else {
