@@ -6,9 +6,9 @@ const path = require('path');
 const { exec } = require("child_process");
 
 const {
-  getGameName
+  getGameName,
+  processArgs
 } = require('./common');
-const { resolve } = require('path');
 
 // Country codes in preferred order
 const preferredVersions = [
@@ -22,62 +22,89 @@ const preferredVersions = [
   'Jap]'
 ];
 
-const dir = process.argv[2];
+const args = processArgs();
+const dir = args._[0];
+const deleteNonPreferred = !!args['delete-non-preferred'];
+const copyPreferredToPath = args['copy-to-path'];
+const recursive = args['recursive'];
+const dryRun = !!args['dry-run'];
+const verbose = !!args['verbose'];
 
 if (!dir) {
-  throw 'No dir specified';
+  throw 'No path specified';
 }
+
+const dirs = [dir];
 
 const hasCheevosCache = {};
 
-const dryRun = process.argv.includes('--dry-run');
 
-const preferred = {};
-const deleted = []
+if (dryRun) {
+  console.log('DRY RUN');
+}
 
-fs.readdir(dir, async (err, files) => {
+async function start() {
+  const files = await getFilesFromDirs(dirs, recursive);
   console.log(`${files.length} files found`);
+  await parseFiles(files);
+  console.log('Done.');
+}
 
-  // Get the best of each game
-  for (const file of files) {
-    const filePath = path.join(dir, file);
-    const game = getGameName(file);
-    preferred[game] = preferred[game] || filePath;
-    preferred[game] = await getPreferred(preferred[game], filePath);
-  }
+// Helper functions
 
-  // Delete the ones which are not the best
-  for (const file of files) {
-    const game = getGameName(file);
-    if (file !== preferred[game]) {
-      console.log(`Delete ${file} instead of ${preferred[game]}`);
-      deleted.push(file);
+async function getFilesFromDirs(dirs, recursive) {
+  const files = await Promise.all(dirs.map(dir => getFilesFromDir(dir, recursive)));
+  // Flatten the array
+  return [].concat(...files);
+}
 
-      if (!dryRun) {
-        fs.unlink(path.join(dir, file), (err) => {
-          if (err) {
-            console.log(err);
-          }
-        });
+async function getFilesFromDir(dir, recursive) {
+  return new Promise((resolve, reject) => {
+    fs.readdir(dir, async (err, result) => {
+      if (err) {
+        reject(err);
+        return;
       }
+      const files = result.filter(file => fs.lstatSync(path.join(dir, file)).isFile());
+      const dirs = result.filter(file => fs.lstatSync(path.join(dir, file)).isDirectory());
+
+      resolve(files.map(file => path.join(dir, file)));
+    });
+  })
+}
+
+/**
+ * Goes through all the files and selects the preferred and deletes the rest.
+ * @param {string[]} files
+ */
+async function parseFiles(files) {
+  const preferred = await getPreferred(files);
+
+  if (copyPreferredToPath) {
+    const copied = await copyFilesToPath(Object.values(preferred), copyPreferredToPath);
+
+    console.log(`${copied.length} files copied to ${copyPreferredToPath}`);
+    if (copied.length && dryRun) {
+      console.log('DRY RUN. Nothing copied in fact')
     }
   }
 
-  console.log(`${deleted.length} files deleted`);
-  if (deleted.length && dryRun) {
-    console.log('DRY RUN. Nothing deleted in fact')
+  if (deleteNonPreferred) {
+    const deleted = removeNonPreferred(files, preferred);
+
+    console.log(`${deleted.length} files deleted`);
+    if (deleted.length && dryRun) {
+      console.log('DRY RUN. Nothing deleted in fact')
+    }
   }
-});
-
-
-// Helper functions
+}
 
 /**
  * Chooses the best rom between two according to the preference table and with priority to cheevos
  * @param {string} filePath1
  * @param {string} filePath2
  */
-async function getPreferred(filePath1, filePath2) {
+async function compareFiles(filePath1, filePath2) {
   if (!filePath1) {
     return filePath2;
   }
@@ -87,12 +114,6 @@ async function getPreferred(filePath1, filePath2) {
   const file1Score = getScore(filePath1);
   const file2Score = getScore(filePath2);
 
-  // const cheevosPromises = [
-  //   hasCheevos(filePath1),
-  //   hasCheevos(filePath2)
-  // ];
-
-  // [hasCheevos1, hasCheevos2] = await Promise.all(cheevosPromises);
   const hasCheevos1 = await hasCheevos(filePath1);
   const hasCheevos2 = await hasCheevos(filePath2);
 
@@ -102,13 +123,104 @@ async function getPreferred(filePath1, filePath2) {
     filePath2;
 }
 
+/**
+ * For each game, chooses the preferred file
+ * @param {string[]} files
+ * @return The selected games as a hash { [game]: filePath }
+ */
+async function getPreferred(files) {
+  const preferred = {};
+  // Get the best of each game
+  for (const filePath of files) {
+    verbose && console.log(`Checking ${filePath}. Score: ${getScore(filePath)}`);
+    const game = getGameName(filePath);
+
+    if (!preferred[game]) {
+      preferred[game] = filePath;
+    } else {
+      const prevPreferred = preferred[game];
+      preferred[game] = await compareFiles(preferred[game], filePath);
+      const declined = prevPreferred === preferred[game] ? filePath : prevPreferred;
+      verbose && console.log(`- Choosing ${preferred[game]} (Cheevos: ${await hasCheevos(preferred[game])}) over ${declined} (Cheevos: ${await hasCheevos(declined)})`);
+    }
+  }
+
+  return preferred;
+}
+
+async function copyFilesToPath(filePaths, destPath) {
+  return Promise.all(filePaths.map(filePath => copyFileToPath(filePath, destPath)));
+}
+
+async function copyFileToPath(filePath, destDir) {
+  const fileName = filePath.split('/').pop();
+  const destPath = resolveHome(path.join(destDir, fileName));
+  verbose && console.log(`Copying ${filePath} to ${destPath}`);
+  return new Promise((resolve, reject) => {
+    if (!dryRun) {
+      fs.copyFile(filePath, destPath, (err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(filePath);
+      });
+    } else {
+      resolve(filePath);
+    }
+  });
+}
+
+function resolveHome(filepath) {
+  if (filepath[0] === '~') {
+      return path.join(process.env.HOME, filepath.slice(1));
+  }
+  return filepath;
+}
+
+/**
+ *  Deletes the files that are not the preferred version of its game
+ * @param {string[]} files
+ * @param {object} preferred An object with the preferred file per game { [game]: filePath }
+ */
+function removeNonPreferred(files, preferred) {
+  // Delete the files which are not the best
+  const deleted = [];
+  for (const filePath of files) {
+    const game = getGameName(filePath);
+    if (filePath !== preferred[game]) {
+      deleted.push(filePath);
+      if (!dryRun) {
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.log(`Error deleting file ${filePath}`, err);
+          }
+        });
+      }
+    }
+  }
+  return deleted;
+}
+
+/**
+ * Returns the score of the file as a numeric value. The higher, the better
+ * @param {string} filePath
+ */
 function getScore(filePath) {
   const fileName = filePath.split('/').pop();
   for (let i = 0, n = preferredVersions.length; i < n; i++) {
-    if (fileName.toUpperCase().includes(preferredVersions[i].toUpperCase()) > -1) {
-      return preferredVersions.length - i;
+    const pattern = preferredVersions[i];
+    if (typeof pattern === 'string') {
+      if (fileName.toUpperCase().includes(preferredVersions[i].toUpperCase())) {
+        return preferredVersions.length - i;
+      }
+    } else if (pattern instanceof RegExp) {
+      if (fileName.match(pattern)) {
+        return preferredVersions.length - i;
+      }
     }
   }
+  return 0;
 }
 
 
@@ -135,3 +247,5 @@ function hasCheevos(filePath) {
     });
   });
 }
+
+start();
