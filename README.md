@@ -4,7 +4,7 @@ Scripts to filter and sort the emulator roms to keep the best version of each ga
 
 Use it together with [hascheevos](https://github.com/meleu/hascheevos) to select also those with [RetroAchievements](https://retroachievements.org/).
 
-## Usage:
+## Usage
 
 The idea is having the best version of each game, with priority with those with cheevos.
 
