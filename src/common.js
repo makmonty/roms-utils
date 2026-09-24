@@ -18,6 +18,23 @@ function getGameName(file) {
   return name.trim().toUpperCase();
 }
 
+function extractFileParts(path) {
+  // Extract file name
+  let filename = path.split('/').pop();
+  // Remove extension
+  const nameSplit = filename.split('.');
+  const extension = nameSplit.pop();
+  const name = filename.replace(/\[.*\]|\(.*\)/g, ' ').trim();
+  const tags = filename.match(/\[.*\]|\(.*\)/g);
+
+  return {
+    filename,
+    extension,
+    name,
+    tags
+  };
+}
+
 function processArgs() {
   const args = process.argv.slice(2);
   const argObj = {_: []};
