@@ -1,14 +1,14 @@
 /**
  * Keeps the preferred version of each game and deletes the rest
  */
-const fs = require('fs');
-const path = require('path');
-const { exec } = require("child_process");
+import fs from 'fs';
+import path from 'path';
+import { exec } from 'child_process';
 
-const {
+import {
   getGameName,
   processArgs
-} = require('./common');
+} from './utils/file';
 
 // Country codes in preferred order
 const preferredVersions = [
@@ -72,12 +72,12 @@ async function getFilesFromDir(dir, recursive) {
 
       if (recursive) {
         const recFiles = await getFilesFromDirs(dirs, recursive);
-        files = files.concat(recFiles)
+        files = files.concat(recFiles);
       }
 
       resolve(files);
     });
-  })
+  });
 }
 
 /**
@@ -91,7 +91,7 @@ async function parseFiles(files) {
 
     console.log(`${copied.length} files copied to ${copyPreferredToPath}`);
     if (copied.length && dryRun) {
-      console.log('DRY RUN. Nothing copied in fact')
+      console.log('DRY RUN. Nothing copied in fact');
     }
   }
 
@@ -100,7 +100,7 @@ async function parseFiles(files) {
 
     console.log(`${deleted.length} files deleted`);
     if (deleted.length && dryRun) {
-      console.log('DRY RUN. Nothing deleted in fact')
+      console.log('DRY RUN. Nothing deleted in fact');
     }
   }
 }
