@@ -16,7 +16,7 @@ export const regions = [
   'World',
   'Europe',
   'Asia',
-];
+] as const;
 
 export const languages = [
   'En',
@@ -34,4 +34,4 @@ export const languages = [
   'Zh',
   'Ko',
   'Pl',
-];
+] as const;

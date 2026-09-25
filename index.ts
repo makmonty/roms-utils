@@ -1,6 +1,6 @@
 import arg from 'arg';
-import { copy } from './src/commands/copy.js';
-import { getDatContent } from './src/utils/dat.js';
+import { copy } from './src/commands/copy.ts';
+import type { Config } from './src/types/config.ts';
 
 const args = arg({
   '--from': String,
@@ -11,10 +11,21 @@ const args = arg({
 
 const command = args['_'][0];
 
-const from = args['--from'];
-const dest = args['--dest'];
-const dat = args['--dat'];
-const config = {};
+const from = args['--from'] as string;
+const dest = args['--dest'] as string;
+const dat = args['--dat'] as string;
+const config: Config = {
+  preferences: [
+    {
+      type: 'regions',
+      order: ['Spain', 'Europe', 'World', 'USA', 'Japan']
+    },
+    {
+      type: 'pirate',
+      order: [false]
+    }
+  ]
+};
 const dryRun = Boolean(args['--dryrun']);
 
 // if (dat) {

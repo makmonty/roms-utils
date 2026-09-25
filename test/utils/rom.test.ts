@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { getBestRom, getRomClonesFromDat, getRomDescription } from '../../src/utils/rom.js';
+import { getBestRom, getRomClonesFromDat, getRomDescription } from '../../src/utils/rom';
+import { Config } from '../../src/types/config';
 
 const dat = {
   datafile: {
@@ -138,13 +139,13 @@ describe('Rom utils', () => {
 
   describe('#getBestRom', () => {
     it('should return the best rom given a criteria', () => {
-      const romDats = [
+      const roms = [
         'Some Game (Japan)',
         'Some Game (USA)',
         'Some Game (Europe)',
       ];
 
-      const config = {
+      const config: Config = {
         preferences: [
           {
             type: 'Region',
@@ -153,7 +154,7 @@ describe('Rom utils', () => {
         ],
       };
 
-      const romDescriptions = romDats.map(getRomDescription);
+      const romDescriptions = roms.map(getRomDescription);
 
       expect(getBestRom(romDescriptions, config)).toEqual(romDescriptions[2]);
     });

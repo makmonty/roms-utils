@@ -4,6 +4,7 @@ import stylistic from '@stylistic/eslint-plugin';
 import {
   defineConfig,
 } from 'eslint/config';
+import tseslint from 'typescript-eslint';
 
 export default defineConfig([
   stylistic.configs.customize({
@@ -17,7 +18,10 @@ export default defineConfig([
       js,
       '@stylistic': stylistic,
     },
-    extends: ['js/recommended'],
+    extends: [
+      'js/recommended',
+      tseslint.configs.recommended,
+    ],
     languageOptions: {
       globals: globals.node,
     },
@@ -27,15 +31,16 @@ export default defineConfig([
         code: 80,
       }],
       '@stylistic/array-bracket-spacing': ['error', 'never'],
-      '@stylistic/line-style': ['error', {
-        singleLine: {
-          maxItems: 2,
-        },
-        multiLine: {
-          minItems: 1,
-        },
-      }],
+      // '@stylistic/list-style': ['error', {
+      //   singleLine: {
+      //     maxItems: 2,
+      //   },
+      //   multiLine: {
+      //     minItems: 1,
+      //   },
+      // }],
       '@stylistic/object-curly-newline': ['error', {
+        minProperties: 2,
         consistent: true,
       }],
       '@stylistic/object-property-newline': ['error', {

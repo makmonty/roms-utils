@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "paths": {
+      "#/*": "./src/*",
+      "test/*": "./test/*"
+    }
+  },
+  "include": [
+    "./test/**/*.{ts,js}"
+  ]
+}

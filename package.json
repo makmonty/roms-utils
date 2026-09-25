@@ -19,8 +19,13 @@
   "author": "",
   "type": "module",
   "main": "index.js",
+  "imports": {
+    "#/*": "./src/*"
+  },
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "lint": "eslint",
+    "lint:quiet": "eslint --quiet"
   },
   "dependencies": {
     "@retroachievements/api": "^2.10.0",
@@ -30,8 +35,12 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@stylistic/eslint-plugin": "^5.10.0",
+    "@types/node": "^26.6.2",
+    "@types/xml2js": "^0.4.14",
     "eslint": "^10.11.0",
     "globals": "^17.12.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.1",
     "vitest": "^5.0.1"
   }
 }
