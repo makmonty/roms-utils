@@ -5,7 +5,7 @@ export async function copy({
   dest,
   dat,
   config,
-  dryRun
+  dryRun,
 }) {
   const files = await fs.promises.readdir(from);
   files.forEach(file => console.log(file));

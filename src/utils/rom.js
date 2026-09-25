@@ -1,4 +1,7 @@
-import { regions as nointroRegions, languages as nointroLanguages } from '../constants/nointro.js';
+import {
+  regions as nointroRegions,
+  languages as nointroLanguages
+} from '../constants/nointro.js';
 
 const tagRegEx = /\[([^\]]*)\]|\(([^)]*)\)/g;
 
@@ -11,7 +14,7 @@ export function getRomDescription(path) {
   const rom = nameSplit.join('.');
   const game = rom.replace(tagRegEx, '').trim();
   const tags = [...file.matchAll(tagRegEx)]
-    .map(match =>  match[1] || match[2])
+    .map(match => match[1] || match[2])
     .reduce((acc, tag) => {
       tag.split(',').forEach(t => acc.push(t.trim()));
       return acc;
@@ -38,13 +41,13 @@ export function getRomClonesFromDat(rom, dat) {
   const originalId = romDat['$'].cloneofid || romDat['$'].id;
 
   return games.filter(game =>
-    game['$'].id === originalId || game['$'].cloneofid === originalId
+    game['$'].id === originalId || game['$'].cloneofid === originalId,
   );
 }
 
 export function getBestRom(romDescriptions, config) {
   let rom = null;
-  romDescriptions.forEach(romDesc => {
+  romDescriptions.forEach((romDesc) => {
     if (!rom) {
       rom = romDesc;
       return;
@@ -57,7 +60,10 @@ export function getBestRom(romDescriptions, config) {
 }
 
 export function compareRoms(romDesc1, romDesc2, config) {
-  console.log({ romDesc1, romDesc2 });
+  console.log({
+    romDesc1,
+    romDesc2,
+  });
   for (const pref of config.preferences) {
     for (const item of pref.order) {
       if (romDesc1.tags.includes(item) && !romDesc2.tags.includes(item)) {

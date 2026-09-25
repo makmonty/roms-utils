@@ -1,4 +1,4 @@
 export const commands = [
   'copy',
-  'move'
+  'move',
 ];

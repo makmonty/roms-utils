@@ -15,7 +15,7 @@ export const regions = [
   'USA',
   'World',
   'Europe',
-  'Asia'
+  'Asia',
 ];
 
 export const languages = [
@@ -33,5 +33,5 @@ export const languages = [
   'Fi',
   'Zh',
   'Ko',
-  'Pl'
+  'Pl',
 ];

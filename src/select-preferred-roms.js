@@ -7,7 +7,7 @@ import { exec } from 'child_process';
 
 import {
   getGameName,
-  processArgs
+  processArgs,
 } from './utils/file';
 
 // Country codes in preferred order
@@ -19,7 +19,7 @@ const preferredVersions = [
   '(F)',
   '(JU)',
   '(J)',
-  'Jap]'
+  'Jap]',
 ];
 
 const args = processArgs();

@@ -1,12 +1,12 @@
 import arg from 'arg';
-import {copy} from './src/commands/copy.js';
+import { copy } from './src/commands/copy.js';
 import { getDatContent } from './src/utils/dat.js';
 
 const args = arg({
   '--from': String,
   '--dest': String,
   '--dat': String,
-  '--dryrun': Boolean
+  '--dryrun': Boolean,
 });
 
 const command = args['_'][0];
@@ -30,7 +30,7 @@ switch(command) {
       dest,
       dat,
       config,
-      dryRun
+      dryRun,
     });
     break;
   default:

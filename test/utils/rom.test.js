@@ -8,40 +8,40 @@ const dat = {
         '$': { name: 'Some Game (Japan)', id: '0001' },
         category: ['Games'],
         description: ['Some Game (Japan)'],
-        rom: [{ '$': [] }]
+        rom: [{ '$': [] }],
       },
       {
         '$': { name: 'Some Game (USA)', id: '0002', cloneofid: '0001' },
         category: ['Games'],
         description: ['Some Game (USA)'],
-        rom: [{ '$': [] }]
+        rom: [{ '$': [] }],
       },
       {
         '$': { name: 'Some Game (Europe)', id: '0003', cloneofid: '0001' },
         category: ['Games'],
         description: ['Some Game (Europe)'],
-        rom: [{ '$': [] }]
+        rom: [{ '$': [] }],
       },
       {
         '$': { name: 'Other game (Japan)', id: '0004' },
         category: ['Games'],
         description: ['Other game (Japan)'],
-        rom: [{ '$': [] }]
+        rom: [{ '$': [] }],
       },
       {
         '$': { name: 'Other game (Japan)(Rev 1)', id: '0005', cloneofid: '0004' },
         category: ['Games'],
         description: ['Other game (Japan)(Rev 1)'],
-        rom: [{ '$': [] }]
+        rom: [{ '$': [] }],
       },
       {
         '$': { name: 'No clone game (Japan)', id: '0006' },
         category: ['Games'],
         description: ['No clone game (Japan)'],
-        rom: [{ '$': [] }]
-      }
-    ]
-  }
+        rom: [{ '$': [] }],
+      },
+    ],
+  },
 };
 
 describe('Rom utils', () => {
@@ -61,7 +61,7 @@ describe('Rom utils', () => {
           'Es',
         ],
         regions: ['Japan'],
-        languages: ['En', 'Fr', 'Es']
+        languages: ['En', 'Fr', 'Es'],
       });
     });
 
@@ -84,19 +84,19 @@ describe('Rom utils', () => {
           '$': { name: 'Some Game (Japan)', id: '0001' },
           category: ['Games'],
           description: ['Some Game (Japan)'],
-          rom: [{ '$': [] }]
+          rom: [{ '$': [] }],
         },
         {
           '$': { name: 'Some Game (USA)', id: '0002', cloneofid: '0001' },
           category: ['Games'],
           description: ['Some Game (USA)'],
-          rom: [{ '$': [] }]
+          rom: [{ '$': [] }],
         },
         {
           '$': { name: 'Some Game (Europe)', id: '0003', cloneofid: '0001' },
           category: ['Games'],
           description: ['Some Game (Europe)'],
-          rom: [{ '$': [] }]
+          rom: [{ '$': [] }],
         },
       ]);
     });
@@ -107,19 +107,19 @@ describe('Rom utils', () => {
           '$': { name: 'Some Game (Japan)', id: '0001' },
           category: ['Games'],
           description: ['Some Game (Japan)'],
-          rom: [{ '$': [] }]
+          rom: [{ '$': [] }],
         },
         {
           '$': { name: 'Some Game (USA)', id: '0002', cloneofid: '0001' },
           category: ['Games'],
           description: ['Some Game (USA)'],
-          rom: [{ '$': [] }]
+          rom: [{ '$': [] }],
         },
         {
           '$': { name: 'Some Game (Europe)', id: '0003', cloneofid: '0001' },
           category: ['Games'],
           description: ['Some Game (Europe)'],
-          rom: [{ '$': [] }]
+          rom: [{ '$': [] }],
         },
       ]);
     });
@@ -130,7 +130,7 @@ describe('Rom utils', () => {
           '$': { name: 'No clone game (Japan)', id: '0006' },
           category: ['Games'],
           description: ['No clone game (Japan)'],
-          rom: [{ '$': [] }]
+          rom: [{ '$': [] }],
         },
       ]);
     });
@@ -148,9 +148,9 @@ describe('Rom utils', () => {
         preferences: [
           {
             type: 'Region',
-            order: ['Europe', 'USA']
-          }
-        ]
+            order: ['Europe', 'USA'],
+          },
+        ],
       };
 
       const romDescriptions = romDats.map(getRomDescription);
