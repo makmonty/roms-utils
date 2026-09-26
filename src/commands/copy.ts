@@ -1,5 +1,5 @@
-import type { Config } from '../types/config.ts';
-import { getBestRoms } from '../utils/rom.ts';
+import type { Config } from '#/types/config.ts';
+import { getBestRoms } from '#/utils/rom.ts';
 
 export async function copy({
   from,

@@ -1,4 +1,1 @@
-export const commands = [
-  'copy',
-  'move',
-] as const;
+export const commands = ['copy', 'move'] as const;

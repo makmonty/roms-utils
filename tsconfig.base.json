@@ -9,7 +9,9 @@
     "forceConsistentCasingInFileNames": true,
     "allowImportingTsExtensions": true,
     "paths": {
-      "#/*": "./src/*"
+      "#/*": [
+        "./src/*"
+      ]
     },
     "types": [
       "node"

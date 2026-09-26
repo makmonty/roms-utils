@@ -64,5 +64,5 @@ export const validExtensions = [
   'trd',
   'scl',
   'm3u',
-  'pbp'
-] as const
+  'pbp',
+] as const;

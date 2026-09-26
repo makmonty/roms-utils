@@ -18,13 +18,13 @@ const config: Config = {
   preferences: [
     {
       type: 'regions',
-      order: ['Spain', 'Europe', 'World', 'USA', 'Japan']
+      order: ['Spain', 'Europe', 'World', 'USA', 'Japan'],
     },
     {
       type: 'pirate',
-      order: [false]
-    }
-  ]
+      order: [false],
+    },
+  ],
 };
 const dryRun = Boolean(args['--dryrun']);
 
@@ -34,7 +34,7 @@ const dryRun = Boolean(args['--dryrun']);
 //   process.exit(0);
 // }
 
-switch(command) {
+switch (command) {
   case 'copy':
     copy({
       from,

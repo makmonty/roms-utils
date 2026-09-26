@@ -3,11 +3,16 @@
   "compilerOptions": {
     "composite": true,
     "paths": {
-      "#/*": "./src/*",
-      "test/*": "./test/*"
+      "#/*": [
+        "./src/*"
+      ],
+      "test/*": [
+        "./test/*"
+      ]
     }
   },
   "include": [
+    "./src/**/*.ts",
     "./test/**/*.{ts,js}"
   ]
 }
