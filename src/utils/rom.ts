@@ -130,7 +130,7 @@ export async function getRomGroupsFromDat(dat: Dat, dir: string) {
     const fileExists = fs.promises.glob(globPattern);
     const files = [];
     for await (const file of fileExists) {
-      files.push(path.join(dir, file));
+      files.push(file);
     }
     if (!files.length) {
       continue;
